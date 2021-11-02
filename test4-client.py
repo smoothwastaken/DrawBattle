@@ -5,11 +5,11 @@ import turtle as tt
 import time
 from PIL import Image
 
-PORT = 5084
+PORT = 5086
 HEADER = 128
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "!leave"
-SERVER = "127.0.0.1"
+SERVER = "172.20.10.4"
 ADDR = (SERVER, PORT)
 
 END_PLAYING = 0
@@ -37,29 +37,29 @@ class Player():
         print(f"""⏳ - Creating player's instance...""")
         print(f"""✅ - Player's instance created.""")
 
-    # def turn_right(self, p):
-    #     p.right(5)
-    #     return
-    #
-    # def turn_left(self, p):
-    #     p.left(5)
-    #     return
-    #
-    # def go_forward(self, p):
-    #     p.forward(3)
-    #     return
-    #
-    # def go_backward(self, p):
-    #     p.backward(3)
-    #     return
-    #
-    # def penup(self, p):
-    #     p.penup()
-    #     return
-    #
-    # def pendown(self, p):
-    #     p.pendown()
-    #     return
+    def turn_right(self, p):
+        p.right(5)
+        return
+
+    def turn_left(self, p):
+        p.left(5)
+        return
+
+    def go_forward(self, p):
+        p.forward(3)
+        return
+
+    def go_backward(self, p):
+        p.backward(3)
+        return
+
+    def penup(self, p):
+        p.penup()
+        return
+
+    def pendown(self, p):
+        p.pendown()
+        return
 
     def create_player(self):
         print(f"""⏳ - Creating players...""")

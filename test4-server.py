@@ -1,8 +1,14 @@
 import socket
 import threading
 import time
+import argparse
 
-PORT = 5084
+parser = argparse.ArgumentParser(description="Start a DrawBattle server with arguments.")
+parser.add_argument('-p', '--port', metavar="PORT", type=int, help="Specify a port number for the creating room.")
+
+args = parser.parse_args()
+
+PORT = args.port
 HEADER = 128
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "!leave"
@@ -23,7 +29,8 @@ class Server():
     def __init__(self, port):
         print(f"""Creating a server's instance...""")
         self.port = port
-        self.addr = socket.gethostbyname(socket.gethostname())
+        # self.addr = socket.gethostbyname(socket.gethostname())
+        self.addr = "172.20.10.4"
         print("Host Name is: " + socket.gethostname())
         print("Computer IP Address is: " + self.addr)
         print(f"""Server instance created. (address: {self.addr}, and port {self.port})""", end="\n")
