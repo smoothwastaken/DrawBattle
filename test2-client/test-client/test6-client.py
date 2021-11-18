@@ -4,10 +4,14 @@ import turtle as tt
 # import keyboard
 import os
 import argparse
-import random
 import time
 import subprocess
+import webbrowser
+import sys
+
 from PIL import Image
+
+VOTE_TIME = 15
 
 parser = argparse.ArgumentParser(description="Start a DrawBattle server with arguments.")
 parser.add_argument('-H', '--host', metavar="<HOST>", type=str, help="Specify an ip number for the room to join.")
@@ -27,16 +31,19 @@ MAX_USERNAME_LENGHT = 16
 SERVER = args.host
 ADDR = (SERVER, PORT)
 
+NOTES = {}
+
+VOTE_COMPLETE = 0
+
 END_PLAYING = 0
 
 turtle = tt.Turtle()
 
 
-
-def save_as_png(canvas,fileName):
+def save_as_png(canvas, fileName):
     # save postscipt image
     print(f"""⏳ - Saving the Tkinter's canvas as .eps file...""")
-    canvas.postscript(file = fileName + '.eps')
+    canvas.postscript(file=fileName + '.eps')
     print(f"""✅ - Tkinter's canvas saved""")
     # use PIL to convert to PNG
     print(f"""⏳ - Opening eps canvas...""")
@@ -79,15 +86,23 @@ class Player():
     def create_player(self):
         print(f"""⏳ - Creating players...""")
         turtle = tt.Turtle()
+        self.set_title()
+        self.screen = tt.Screen()
         turtle.speed('fastest')
         print(f"""✅ - Player created.""")
+
+    def set_title(self):
+        tt.title(f"Thème: {self.theme}")
 
     def end_game(self):
         screen = tt.Screen()
         save_as_png(screen.getcanvas(), "result")
+        screen.bye()
 
-    def start_game(self):
+    def start_game(self, theme):
+        self.theme = theme
         self.create_player
+        self.set_title()
         i = 0
         while True:
             # if keyboard.is_pressed("z"):
@@ -120,6 +135,7 @@ class Player():
                 tt.done()
                 tt.Screen().bye()
                 break
+
 
 class Client():
     def __init__(self):
@@ -168,7 +184,8 @@ class Client():
             if (" " in username):
                 print("You can't have a space in your username. Retry.")
             elif (len(username) == MAX_USERNAME_LENGHT):
-                print(f"""Sorry but your username is too long ({len(username)}). The username has to be shorter than {MAX_USERNAME_LENGHT} chars.""")
+                print(
+                    f"""Sorry but your username is too long ({len(username)}). The username has to be shorter than {MAX_USERNAME_LENGHT} chars.""")
             else:
                 print(f"""Trying to ask if the username {username} is available...""")
                 self.send(f"!is-username {username}")
@@ -178,8 +195,8 @@ class Client():
                     break
 
                 else:
-                    print(f"""❌ - Sorry but the username {username} has been already taken.. Try to find another new one.""")
-
+                    print(
+                        f"""❌ - Sorry but the username {username} has been already taken.. Try to find another new one.""")
 
     def launch_client(self):
         self.select_username()
@@ -194,15 +211,27 @@ class Client():
                 if (self.client.recv(2048).decode(FORMAT) == "!READY"):
                     print(f"""✅ - You are now ready.\n⏳ - Waiting for others players to be ready...""", end="\n\n")
 
-            if (self.client.recv(2048).decode(FORMAT) == "*START-GAME"):
+            recved = self.client.recv(2048).decode(FORMAT)
+            if (recved.startswith("*START-GAME")):
+                command = recved.split(" ")
+                self.theme = command[1]
+                users = command[2]
+                self.users = users.split(",")
+                self.vote_time = int(command[3])
                 self.start_playing()
 
     def start_playing(self):
+        global NOTES
         print(f"""⏳ - Starting the game...""")
+        print(f"""✅ - The theme is: {self.theme}""")
+        for user in self.users:
+            NOTES[f"{user}"] = []
+
+        print(NOTES)
         p = Player()
         thread = threading.Thread(target=self.start_game)
         thread.start()
-        p.start_game()
+        p.start_game(theme=self.theme)
 
     def start_game(self):
         print(f"""✅ - Start playing!""")
@@ -237,8 +266,127 @@ class Client():
                 print(f"""Result sended to the server({SERVER}).""")
                 print(f"""⏳ - Saying to the server that all the image has been sent.""")
                 self.send("!stop-sending-result")
-                if (self.client.recv(2048).decode(FORMAT) == "*IMAGE_SAVED"):
-                    print(f"""✅ - The result has been correctly sent!""")
+                # if (self.client.recv(2048).decode(FORMAT) == "*IMAGE_SAVED"):
+                #     print(f"""✅ - The result has been correctly sent!""")
+
+    # def note_timer(self):
+    #     global VOTE_TIME, VOTE_COMPLETE
+    #     timer = VOTE_TIME
+    #     for user in self.users:
+    #         timer = VOTE_TIME
+    #         VOTE_COMPLETE
+    #         print(f"Les votes commencent pour: {user}, vous avez {VOTE_TIME} secondes ! (pas de mauvaise foi bien sûr...)")
+    #
+    #         while timer != -1:
+    #             print(f"Temp restant pour voter pour {user}...")
+    #             timer -= 1
+    #             time.sleep(1)
+    #
+    #         VOTE_COMPLETE = 1
+    #         print("Joueur suivant")
+
+    # def note_timer(self):
+    #     global VOTE_TIME, VOTE_COMPLETE
+    #     timer = VOTE_TIME
+    #     for user in self.users:
+    #         time.sleep(timer)
+    #         VOTE_COMPLETE = 1
+    #         time.sleep(1)
+
+    # def set_time(self):
+    #     global VOTE_COMPLETE
+    #     VOTE_COMPLETE = 1
+    #     time.sleep(1)
+    #     VOTE_COMPLETE = 0
+
+    # def input_with_timeout(self, prompt, timeout):
+    #     sys.stdout.write(prompt)
+    #     sys.stdout.flush()
+    #     ready, _, _ = select.select([sys.stdin], [], [], timeout)
+    #     if ready:
+    #         return sys.stdin.readline().rstrip('\n')  # expect stdin to be line-buffered
+    #
+    #     print("Timer's end")
+    #     raise TimeoutError
+
+    # def note_timer(self):
+    #     global VOTE_COMPLETE
+    #
+    #     for user in self.users:
+    #         while True:
+    #             if (self.client.recv(2048).decode(FORMAT) == "*NEXT_PLAYER"):
+    #                 VOTE_COMPLETE = 1
+    #                 time.sleep(1)
+    #                 break
+
+    # def alarm_handler(self, signum, frame):
+    #     raise TimeoutError
+
+    # def input_with_timeout(self, prompt, timeout):
+    # set signal handler
+    # signal.signal(signal.SIGALRM, self.alarm_handler)
+    # signal.alarm(timeout)  # produce SIGALRM in `timeout` seconds
+    #
+    # try:
+    #     return input(prompt)
+    # finally:
+    #     signal.alarm(0)
+
+        # global VOTE_COMPLETE, NOTES
+        #
+        # for user in self.users:
+        #     note = 5
+        #     note = input(f"Donne une note à {user} (entre 0 et 10 compris) !\n--> *")
+        #
+        #     print(note)
+        #
+        #     if type(note) != int:
+        #         print("Tu n'as pas donné une note correcte, entre un nombre pile entre 0 et 10 compris")
+        #
+        #     elif note < 0:
+        #         print(f"{note} est trop basse pour être donner (comment t'es méchant)..")
+        #
+        #     elif note > 10:
+        #         print(f"On sait que vous êtes pote mais {note} quand même c'est beaucoup..")
+        #
+        #     else:
+        #         print(f"Tu as donné la note {note} à {user} !")
+        #         NOTES[f"{user}"].append(note)
+        #         print(NOTES)
+        #         break
+        #
+        #     print("Attente de vote pour le joueur suivant...")
+        #
+        #     if (self.client.recv(2048).decode(FORMAT) == "*NEXT_PLAYER"):
+        #         print("Joueur suivant!\n\n")
+        #         pass
+
+    def input_mod(self, prompt):
+        sys.stdout.write(prompt)
+        sys.stdout.flush()
+        return sys.stdin.readline().rstrip('\n')
+
+    def notation_phase1(self, n):
+        note = 5
+        note = self.input_mod(f"Donne une note à {self.users[n]} (entre 0 et 10 compris) !\n--> *")
+
+        print(note)
+
+        print(f"Tu as donné la note {note} à {self.users[n]} !")
+        NOTES[f"{self.users[n]}"].append(note)
+        print(NOTES)
+
+        print("Attente de vote pour le joueur suivant...")
+
+        if (self.client.recv(2048).decode(FORMAT) == "*NEXT_PLAYER"):
+            print("Joueur suivant!\n\n")
+
+    def notation_phase(self):
+        self.notation_phase1(n=0)
+        self.notation_phase1(n=1)
+        self.notation_phase1(n=2)
+        self.notation_phase1(n=3)
+
 
     def end_playing(self):
         global END_PLAYING
@@ -246,7 +394,16 @@ class Client():
         time.sleep(2)
         print(f"""❌ - End playing!""", end="\n\n")
         print(f"""⏳ - Note time...""")
+        # Send results
         self.send_result()
+        print("⏳ - Opening the compositions web-viewer...")
+        # Start webserver for a delay
+        time.sleep(2)
+        webbrowser.open(f"http://{SERVER}:3000")
+
+        self.notation_phase()
+
+        # Game ends
         self.send("!end-game-ok")
         self.disconnect()
         exit()

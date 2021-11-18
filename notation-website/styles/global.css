@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+
+@font-face {
+    font-family: 'Gilroy';
+    src: local('Gilroy'), url(./fonts/Gilroy.otf) format('otf');
+  }
+@font-face {
+    font-family: 'Greycliffcf';
+    src: local('Greycliffcf'), url(./fonts/Greycliffcf.otf) format('otf');
+  }
+@font-face {
+    font-family: 'Rebrand';
+    src: local('Rebrand'), url(./fonts/Rebrand-Heavy.ttf) format('ttf');
+  }
+@font-face {
+    font-family: 'SofiaPro';
+    src: local('SofiaPro'), url(./fonts/Sofia-Pro.otf) format('otf');
+  }
+
+@tailwind utilities;
+

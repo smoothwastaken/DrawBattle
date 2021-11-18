@@ -3,8 +3,8 @@ import os
 import subprocess
 import socket
 
-SERVER_FILE = "test5-server.py"
-CLIENT_FILE = "test5-client.py"
+SERVER_FILE = "test6-server.py"
+CLIENT_FILE = "test6-client.py"
 LOCAL_IP_ADDR = socket.gethostbyname(socket.gethostname())
 
 IS_HOST = False

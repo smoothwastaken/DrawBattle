@@ -23,7 +23,7 @@ server.listen()
 
 client_socket, client_address = server.accept()
 
-file_path = f'./results/{username}.png'
+file_path = f'./notation-website/results/{username}.png'
 
 file = open(file_path, "wb+")
 image_chunk = client_socket.recv(2048)
