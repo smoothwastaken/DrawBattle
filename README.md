@@ -1,5 +1,5 @@
 # DrawBattle
-## **Introduction**
+## **Introduction** 😄
   DrawBattle is a NSI Project where we have to make something with the python module:
 
 > [`turtle`](https://docs.python.org/3/library/turtle.html#module-turtle "turtle: An educational framework for simple graphics applications")  — Turtle graphics
@@ -9,7 +9,7 @@ I hope that you will get fun to see how far we gone!
  
  Have a nice day :)
 
-## Installation
+## Installation 😉
 Clone this repository to somewhere in your computer and `cd` in:
 
     git clone https://github.com/smoothwastaken/DrawBattle.git
@@ -19,7 +19,7 @@ To install all the stuff for DrawBattle works, you can just launch the `setup.sh
 
     sudo bash ./setup.sh
 
-## How to use
+## How to use 😯
 The use if very simple.
 To start playing, you have to launch the server on an available port (see it as a room number) with the following command:
 ### Linux
@@ -34,7 +34,7 @@ After it you can just start playing as a player with the following command:
 See the "Issues" section to know why MacOs isn't supported.
 
 
-## Issues
+## Issues 😖
 
 ### Windows
 There are some small issues on Windows so we can't play on for the moment...
