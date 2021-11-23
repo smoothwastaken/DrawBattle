@@ -25,16 +25,17 @@ IS_USERNAME_OK = "!is-username"
 READY_MESSAGE = "!ready"
 START_GAME_OK = "!start-game-ok"
 END_GAME_OK = "!end-game-ok"
-USER_OK_MESSAGE = "!user-ok"
+CAN_SEND_NOTES = "!sending-notes"
 START_RECEIVING_RESULTS = "!sending-result"
 STOP_RECEIVING_RESULTS = "!stop-sending-result"
 IMAGE_RECV_FILE = "img-sender/server.py"
 OS = ""
-GAME_TIME = 8
-VOTE_TIME = 45
+GAME_TIME = 300
+VOTE_TIME = 60
 IS_VOTING = 1
+IS_WEBSITE_STARTED = 0
+IS_NOTATION_PHASE_STARTED = 0
 NOTES = {}
-NOTES_RESULTS = []
 
 READY_COUNT = 0
 START_GAME = 0
@@ -51,9 +52,13 @@ class Server():
     def __init__(self, port):
         print(f"""Creating a server's instance...""")
         self.port = port
+        
         ni.ifaddresses('wlan0')
         self.addr = ni.ifaddresses('wlan0')[ni.AF_INET][0]['addr']
+
+        # self.addr = socket.gethostbyname(socket.gethostname())
         # self.addr = "172.20.10.4"
+
         global OS
         if (os.name == "nt"):
             OS = "W"
@@ -93,96 +98,133 @@ class Server():
 
     def start_web_viewer(self):
         print(f"""⏳ - Trying to launch the web viewer...""")
-        semaphore = threading.Semaphore(5)
         try:
-            with semaphore:
-                if OS == "W":
-                    subprocess.Popen("cd ./notation-website/ && npm run dev")
-                    # subprocess.run(F"cd ./notation-website/ && npm run dev", shell=True)
-                else:
-                    subprocess.Popen("cd ./notation-website/ && npm run dev")
-                    # subprocess.run(f"cd ./notation-website/ && npm run dev", shell=True)
+            if OS == "W":
+                subprocess.run(f"bash launch_website_cmd.sh && exit", shell=True)
+            else:
+                subprocess.run(f"bash launch_website_cmd.sh && exit", shell=True)
 
-                print("✅ - Web viewer launched correctly!")
-
-        except:
-            print("❌ - Error during launching the web viewer :(")
-            pass
+        except Exception as err:
+            print("Error during launching the preview website...")
+            exit()
 
     def notation_phase1(self, conn):
         print(f"""✅ - Notation phase started""")
 
-        self.start_web_viewer()
-
-        users = ""
         USERNAMES.sort()
-        for user in USERNAMES:
-            users += f"{user},"
-        users = users[:-1]
-        
-        self.notation_phase2(conn)
 
-    def vote_timer(self):
-        global IS_VOTING
-
-        print("sth")
-
-        for user in USERNAMES:
-            print(user)
-            time.sleep(VOTE_TIME)
-            for conn in PLAYERS_CONNECTED:
-                try:
-                    conn.send(f"*NEXT_PLAYER".encode(FORMAT))
-                    print(f"Order sent at: {conn}")
-                except:
-                    print(f"""Cannot reach the player ({conn}).""")
-
-    def notation_phase2(self, conn):
-        global NOTES, NOTES_RESULTS
-        USERNAMES_LENGHT = len(USERNAMES)
-        USERNAMES.sort()
         for user in USERNAMES:
             NOTES[f"{user}"] = []
-
-        print(NOTES)
-
-        self.vote_timer()
-
-        while IS_VOTING == 1:
-            msg_length = conn.recv(HEADER).decode(FORMAT)
-            if msg_length:
-                msg_length = int(msg_length)
-                data = conn.recv(msg_length)
-                msg = data.decode(FORMAT)
-
-                if msg.startswith("*NOTE"):
-                    command = msg.split(" ")
-                    user = command[1]
-                    note = int(command[2])
-                    
-                    NOTES[f"{user}"].append(note)
-
+        os.system("clear")
         for user in USERNAMES:
-            temp_list = NOTES[f"{user}"]
+            print(USERNAMES)
+            time.sleep(1)
+            note = input(f"Quelle note voulez-vous attribuer à {user} ?\n--> ~")
 
-            j = 0
-            for i in temp_list:
-                j += i
+            # if int(note) < 0 or int(note) > 10:
+            #     print(f"""\nLa note n'est pas comprise entre 0 et 10 compris. Recommence.""")
+            # else:
+            print(f"\nVous avez donné la note {note} à {user} !")
+            NOTES[f"{user}"].append(int(note))
 
-            m = j / USERNAMES_LENGHT
-            
-            NOTES_RESULTS.append(m)
+            print(NOTES)
 
-        NOTES_RESULTS = NOTES_RESULTS.sort()
+        NOTESS = {}
+        NOTESSS = []
+        for user in NOTES:
+            w = 0
+            for i in NOTES[f"{user}"]:
+                w += i
+            w = w / len(NOTES[f"{user}"])
 
 
-        w = ""
-        for result in NOTES_RESULTS:
-            w += f"{result},"
+            NOTESSS.append(w)
+            NOTESS[f"{w}"] = user
 
-        w = w[:-1]
+        NOTESSS.sort()
 
-        self.conn.send(f"RESULTS {w}".encode(FORMAT))
+        NOTESSS.reverse()
+
+        print("\n\n\nClassement:")
+        for i in NOTESSS:
+            print(NOTESS[f'{i}'])
+        print("\n\n\n\n\n\n\n\n\n")
+
+
+
+
+
+
+
+
+
+
+
+        #     users += f"{user},"
+        # users = users[:-1]
+
+    # def vote_timer(self):
+    #     global IS_VOTING
+    #
+    #     for user in USERNAMES:
+    #         print(user)
+    #         time.sleep(VOTE_TIME)
+    #         for conn in PLAYERS_CONNECTED:
+    #             try:
+    #                 conn.send(f"*NEXT_PLAYER".encode(FORMAT))
+    #                 print(f"Order sent at: {conn}")
+    #             except:
+    #                 print(f"""Cannot reach the player ({conn}).""")
+
+    def notation_phase2(self, conn):
+        # global NOTES, NOTES_RESULTS
+        # USERNAMES_LENGHT = len(USERNAMES)
+        # USERNAMES.sort()
+        # for user in USERNAMES:
+        #     NOTES[f"{user}"] = []
+        #
+        # print(NOTES)
+        #
+        # self.vote_timer()
+        #
+        # while IS_VOTING == 1:
+        #     msg_length = conn.recv(HEADER).decode(FORMAT)
+        #     if msg_length:
+        #         msg_length = int(msg_length)
+        #         data = conn.recv(msg_length)
+        #         msg = data.decode(FORMAT)
+        #
+        #         if msg.startswith("*NOTE"):
+        #             command = msg.split(" ")
+        #             user = command[1]
+        #             note = int(command[2])
+        #
+        #             NOTES[f"{user}"].append(note)
+        #
+        # for user in USERNAMES:
+        #     temp_list = NOTES[f"{user}"]
+        #
+        #     j = 0
+        #     for i in temp_list:
+        #         j += i
+        #
+        #     m = j / USERNAMES_LENGHT
+        #
+        #     NOTES_RESULTS.append(m)
+        #
+        # NOTES_RESULTS = NOTES_RESULTS.sort()
+        #
+        #
+        # w = ""
+        # for result in NOTES_RESULTS:
+        #     w += f"{result},"
+        #
+        # w = w[:-1]
+        #
+        # self.conn.send(f"*RECEPTION_OK".encode(FORMAT))
+
+
+
 
         print("""LE JEU EST ENFIN FINI, J'ESPÈRE QUE TOUT MARCHE PURÉE""")
 
@@ -209,7 +251,7 @@ class Server():
             subprocess.run(f"python3 {IMAGE_RECV_FILE} -n {username} -p {img_scripts_port}", shell=True)
 
     def handle_client(self, conn, addr):
-        global IS_USERNAME_OK, USERNAMES, START_GAME, END_GAME, IN_GAME, READY_COUNT, PLAYERS_CONNECTED, RESULT_PHASE
+        global IS_USERNAME_OK, USERNAMES, START_GAME, END_GAME, IN_GAME, READY_COUNT, PLAYERS_CONNECTED, RESULT_PHASE, IS_WEBSITE_STARTED, IS_NOTATION_PHASE_STARTED
         PLAYERS_CONNECTED.append(conn)
         print(f"{addr} is now connected.", end="\n")
         USERNAME = ""
@@ -248,10 +290,15 @@ class Server():
                 elif msg == (START_RECEIVING_RESULTS):
                     conn.send("*RECEPTION_OK".encode(FORMAT))
                     self.handle_img_reception(conn, username)
-                    self.notation_phase1(conn)
 
-                elif msg == USER_OK_MESSAGE:
-                    self.notation_phase2(conn)
+                    if IS_WEBSITE_STARTED == 0:
+                        thread = threading.Thread(target=self.start_web_viewer)
+                        thread.start()
+                        IS_WEBSITE_STARTED = 1
+
+                    if IS_NOTATION_PHASE_STARTED == 0:
+                        self.notation_phase1(conn)
+                        IS_NOTATION_PHASE_STARTED = 1
 
                 elif msg == READY_MESSAGE:
                     READY_COUNT += 1
@@ -313,7 +360,9 @@ class Server():
                 conn.send(f"*START-GAME {self.theme} {users} {VOTE_TIME}".encode(FORMAT))
             except:
                 print(f"""Cannot reach the player ({conn}).""")
+
         time.sleep(GAME_TIME)
+
         print(f"""Ending the game""")
         for conn in PLAYERS_CONNECTED:
             conn.send("*GAME-END".encode(FORMAT))

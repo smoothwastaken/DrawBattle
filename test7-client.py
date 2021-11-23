@@ -7,7 +7,6 @@ import argparse
 import time
 import subprocess
 import webbrowser
-import sys
 
 from PIL import Image
 
@@ -153,26 +152,29 @@ class Player():
         self.set_title()
         self.screen = tt.Screen()
         self.screen.bgcolor("beige")
-        turtle.speed('fastest')
+        self.turtle.speed('fastest')
         print(f"""✅ - Player created.""")
 
     def set_title(self):
         tt.title(f"Thème: {self.theme}")
 
     def end_game(self):
-        screen = tt.Screen()
-        save_as_png(screen.getcanvas(), "result")
-        screen.bye()
+        self.screen = tt.Screen()
+        save_as_png(self.screen.getcanvas(), "result")
+        self.screen.bye()
 
     def start_game(self, theme):
         self.theme = theme
+        self.screen = tt.Screen()
         self.create_player
+        self.turtle = tt.Turtle()
         self.set_title()
 
         self.screen.setup(1280, 1080)
         self.screen.bgcolor("beige")
 
         while True:
+
             if keyboard.is_pressed("z"):
                 self.go_forward()
 
@@ -497,34 +499,43 @@ class Client():
         #         print("Joueur suivant!\n\n")
         #         pass
 
-    def input_mod(self, prompt):
-        sys.stdout.write(prompt)
-        sys.stdout.flush()
-        return sys.stdin.readline().rstrip('\n')
+    # def input_mod(self, prompt):
+    #     sys.stdout.write(prompt)
+    #     sys.stdout.flush()
+    #     return sys.stdin.readline().rstrip('\n')
 
-    def notation_phase1(self, n):
-        note = 5
-        note = self.input_mod(f"Donne une note à {self.users[n]} (entre 0 et 10 compris) !\n--> *")
+    # def notation_phase1(self, n):
+    #     note = 5
+    #     note = self.input_mod(f"Donne une note à {self.users[n]} (entre 0 et 10 compris) !\n--> *")
+    #
+    #     print(note)
+    #
+    #     print(f"Tu as donné la note {note} à {self.users[n]} !")
+    #     NOTES[f"{self.users[n]}"].append(note)
+    #     print(NOTES)
+    #
+    #     print("Attente de vote pour le joueur suivant...")
+    #
+    #     while True:
+    #         if (self.client.recv(2048).decode(FORMAT) == "*NEXT_PLAYER"):
+    #             print("Joueur suivant!\n\n")
+    #             break
 
-        print(note)
-
-        print(f"Tu as donné la note {note} à {self.users[n]} !")
-        NOTES[f"{self.users[n]}"].append(note)
-        print(NOTES)
-
-        print("Attente de vote pour le joueur suivant...")
-
-        while True:
-            if (self.client.recv(2048).decode(FORMAT) == "*NEXT_PLAYER"):
-                print("Joueur suivant!\n\n")
-                break
-
-    def notation_phase(self):
-        self.notation_phase1(n=0)
-        self.notation_phase1(n=1)
-        self.notation_phase1(n=2)
-        self.notation_phase1(n=3)
-
+    # def notation_phase(self):
+    #     self.notation_phase1(n=0)
+    #     self.notation_phase1(n=1)
+    #     self.notation_phase1(n=2)
+    #     self.notation_phase1(n=3)
+    #
+    #     print(f"""⏳ - Asking if we can send the notes that you just gave to the server...""")
+    #     self.send("!sending-notes")
+    #     if (self.client.recv(2048).decode(FORMAT) == "*RECEPTION_OK"):
+    #         for u in NOTES:
+    #             print(NOTES)
+    #             print(u)
+    #         print(f"""✅ - Notes sent !""")
+    #
+    #         input()
 
     def end_playing(self):
         global END_PLAYING
@@ -539,7 +550,8 @@ class Client():
         time.sleep(2)
         webbrowser.open(f"http://{SERVER}:3000")
 
-        self.notation_phase()
+
+        print(f"""Pour donner une note aux joueurs, rendez-vous sur le moniteur de l'host !""")
 
         # Game ends
         self.send("!end-game-ok")

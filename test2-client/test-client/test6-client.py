@@ -11,8 +11,6 @@ import sys
 
 from PIL import Image
 
-VOTE_TIME = 15
-
 parser = argparse.ArgumentParser(description="Start a DrawBattle server with arguments.")
 parser.add_argument('-H', '--host', metavar="<HOST>", type=str, help="Specify an ip number for the room to join.")
 parser.add_argument('-p', '--port', metavar="<PORT>", type=int, help="Specify a port number for the room to join.")
@@ -59,76 +57,220 @@ class Player():
         print(f"""⏳ - Creating player's instance...""")
         print(f"""✅ - Player's instance created.""")
 
-    def turn_right(self, p):
-        p.right(5)
-        return
+    def go_forward(self):
+        self.turtle.forward(3)
 
-    def turn_left(self, p):
-        p.left(5)
-        return
+    def go_backward(self):
+        self.turtle.backward(3)
 
-    def go_forward(self, p):
-        p.forward(3)
-        return
+    def turn_right(self):
+        self.turtle.right(10)
 
-    def go_backward(self, p):
-        p.backward(3)
-        return
+    def turn_left(self):
+        self.turtle.left(10)
 
-    def penup(self, p):
-        p.penup()
-        return
+    def pen_is_up(self):
+        self.turtle.penup()
 
-    def pendown(self, p):
-        p.pendown()
-        return
+    def pen_is_down(self):
+        self.turtle.pendown()
+
+    def pen_10(self):
+        self.turtle.pensize(10)
+
+    def pen_9(self):
+        self.turtle.pensize(9)
+
+    def pen_8(self):
+        self.turtle.pensize(8)
+
+    def pen_7(self):
+        self.turtle.pensize(7)
+
+    def pen_6(self):
+        self.turtle.pensize(6)
+
+    def pen_5(self):
+        self.turtle.pensize(5)
+
+    def pen_4(self):
+        self.turtle.pensize(4)
+
+    def pen_3(self):
+        self.turtle.pensize(3)
+
+    def pen_2(self):
+        self.turtle.pensize(2)
+
+    def pen_1(self):
+        self.turtle.pensize(1)
+
+    def clear_screen(self):
+        self.turtle.clear()
+
+    def fill_start(self):
+        self.turtle.begin_fill()
+
+    def fill_end(self):
+        self.turtle.end_fill()
+
+    def color_blue(self):
+        self.turtle.pencolor("blue")
+
+    def color_red(self):
+        self.turtle.pencolor("red")
+
+    def color_yellow(self):
+        self.turtle.pencolor("yellow")
+
+    def color_green(self):
+        self.turtle.pencolor("green")
+
+    def color_orange(self):
+        self.turtle.pencolor("orange")
+
+    def color_pink(self):
+        self.turtle.pencolor("pink")
+
+    def color_brown(self):
+        self.turtle.pencolor("brown")
+
+    def color_purple(self):
+        self.turtle.pencolor("purple")
+
+    def color_black(self):
+        self.turtle.pencolor("black")
+
+    def color_cyan(self):
+        self.turtle.pencolor("cyan")
+
+    def color_white(self):
+        self.turtle.pencolor("white")
 
     def create_player(self):
         print(f"""⏳ - Creating players...""")
-        turtle = tt.Turtle()
+        self.turtle = tt.Turtle()
         self.set_title()
         self.screen = tt.Screen()
-        turtle.speed('fastest')
+        self.screen.bgcolor("beige")
+        self.turtle.speed('fastest')
         print(f"""✅ - Player created.""")
 
     def set_title(self):
         tt.title(f"Thème: {self.theme}")
 
     def end_game(self):
-        screen = tt.Screen()
-        save_as_png(screen.getcanvas(), "result")
-        screen.bye()
+        self.screen = tt.Screen()
+        save_as_png(self.screen.getcanvas(), "result")
+        self.screen.bye()
 
     def start_game(self, theme):
         self.theme = theme
+        self.screen = tt.Screen()
         self.create_player
+        self.turtle = tt.Turtle()
         self.set_title()
-        i = 0
+
+        self.screen.setup(1280, 1080)
+        self.screen.bgcolor("beige")
+
         while True:
+
+            self.turn_right()
+            self.go_forward()
+
             # if keyboard.is_pressed("z"):
-            #     self.go_forward(turtle)
-            #
+            #     self.go_forward()
+
+            # if keyboard.is_pressed("esc"):
+            #     break
+
             # if keyboard.is_pressed("s"):
-            #     self.go_backward(turtle)
-            #
-            # if keyboard.is_pressed("d"):
-            #     self.turn_right(turtle)
-            #
+            #     self.go_backward()
+
             # if keyboard.is_pressed("q"):
-            #     self.turn_left(turtle)
-            #
-            # if keyboard.is_pressed("o"):
-            #     self.pendown(turtle)
-            #
-            # if keyboard.is_pressed("p"):
-            #     self.penup(turtle)
+            #     self.turn_left()
 
-            turtle.forward(i * 10)
-            turtle.right(144)
+            # if keyboard.is_pressed("d"):
+            #     self.turn_right()
 
-            i += 1
+            # if keyboard.is_pressed("f"):
+            #     self.pen_is_up()
 
-            print(f"""{END_PLAYING}""")
+            # if keyboard.is_pressed("e"):
+            #     self.pen_is_down()
+
+            # if keyboard.is_pressed("0"):
+            #     self.pen_10()
+
+            # if keyboard.is_pressed("9"):
+            #     self.pen_9()
+
+            # if keyboard.is_pressed("8"):
+            #     self.pen_8()
+
+            # if keyboard.is_pressed("7"):
+            #     self.pen_7()
+
+            # if keyboard.is_pressed("6"):
+            #     self.pen_6()
+
+            # if keyboard.is_pressed("5"):
+            #     self.pen_5()
+
+            # if keyboard.is_pressed("4"):
+            #     self.pen_4()
+
+            # if keyboard.is_pressed("3"):
+            #     self.pen_3()
+
+            # if keyboard.is_pressed("2"):
+            #     self.pen_2()
+
+            # if keyboard.is_pressed("1"):
+            #     self.pen_1()
+
+            # if keyboard.is_pressed(" "):
+            #     self.clear_screen()
+
+            # if keyboard.is_pressed("+"):
+            #     self.fill_start()
+
+            # if keyboard.is_pressed("-"):
+            #     self.fill_end()
+
+            # if keyboard.is_pressed("!"):
+            #     self.color_black()
+
+            # if keyboard.is_pressed("x"):
+            #     self.color_red()
+
+            # if keyboard.is_pressed("c"):
+            #     self.color_yellow()
+
+            # if keyboard.is_pressed("v"):
+            #     self.color_green()
+
+            # if keyboard.is_pressed("b"):
+            #     self.color_orange()
+
+            # if keyboard.is_pressed("n"):
+            #     self.color_pink()
+
+            # if keyboard.is_pressed(","):
+            #     self.color_purple()
+
+            # if keyboard.is_pressed(";"):
+            #     self.color_brown()
+
+            # if keyboard.is_pressed(":"):
+            #     self.color_blue()
+
+            # if keyboard.is_pressed("w"):
+            #     self.color_cyan()
+
+            # if keyboard.is_pressed("<"):
+            #     self.color_white()
 
             if END_PLAYING == 1:
                 self.end_game()
@@ -361,32 +503,43 @@ class Client():
         #         print("Joueur suivant!\n\n")
         #         pass
 
-    def input_mod(self, prompt):
-        sys.stdout.write(prompt)
-        sys.stdout.flush()
-        return sys.stdin.readline().rstrip('\n')
+    # def input_mod(self, prompt):
+    #     sys.stdout.write(prompt)
+    #     sys.stdout.flush()
+    #     return sys.stdin.readline().rstrip('\n')
 
-    def notation_phase1(self, n):
-        note = 5
-        note = self.input_mod(f"Donne une note à {self.users[n]} (entre 0 et 10 compris) !\n--> *")
+    # def notation_phase1(self, n):
+    #     note = 5
+    #     note = self.input_mod(f"Donne une note à {self.users[n]} (entre 0 et 10 compris) !\n--> *")
+    #
+    #     print(note)
+    #
+    #     print(f"Tu as donné la note {note} à {self.users[n]} !")
+    #     NOTES[f"{self.users[n]}"].append(note)
+    #     print(NOTES)
+    #
+    #     print("Attente de vote pour le joueur suivant...")
+    #
+    #     while True:
+    #         if (self.client.recv(2048).decode(FORMAT) == "*NEXT_PLAYER"):
+    #             print("Joueur suivant!\n\n")
+    #             break
 
-        print(note)
-
-        print(f"Tu as donné la note {note} à {self.users[n]} !")
-        NOTES[f"{self.users[n]}"].append(note)
-        print(NOTES)
-
-        print("Attente de vote pour le joueur suivant...")
-
-        if (self.client.recv(2048).decode(FORMAT) == "*NEXT_PLAYER"):
-            print("Joueur suivant!\n\n")
-
-    def notation_phase(self):
-        self.notation_phase1(n=0)
-        self.notation_phase1(n=1)
-        self.notation_phase1(n=2)
-        self.notation_phase1(n=3)
-
+    # def notation_phase(self):
+    #     self.notation_phase1(n=0)
+    #     self.notation_phase1(n=1)
+    #     self.notation_phase1(n=2)
+    #     self.notation_phase1(n=3)
+    #
+    #     print(f"""⏳ - Asking if we can send the notes that you just gave to the server...""")
+    #     self.send("!sending-notes")
+    #     if (self.client.recv(2048).decode(FORMAT) == "*RECEPTION_OK"):
+    #         for u in NOTES:
+    #             print(NOTES)
+    #             print(u)
+    #         print(f"""✅ - Notes sent !""")
+    #
+    #         input()
 
     def end_playing(self):
         global END_PLAYING
@@ -401,7 +554,8 @@ class Client():
         time.sleep(2)
         webbrowser.open(f"http://{SERVER}:3000")
 
-        self.notation_phase()
+
+        print(f"""Pour donner une note aux joueurs, rendez-vous sur le moniteur de l'host !""")
 
         # Game ends
         self.send("!end-game-ok")

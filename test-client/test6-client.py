@@ -1,7 +1,7 @@
 import socket
 import threading
 import turtle as tt
-import keyboard
+# import keyboard
 import os
 import argparse
 import time
@@ -153,118 +153,124 @@ class Player():
         self.set_title()
         self.screen = tt.Screen()
         self.screen.bgcolor("beige")
-        turtle.speed('fastest')
+        self.turtle.speed('fastest')
         print(f"""✅ - Player created.""")
 
     def set_title(self):
         tt.title(f"Thème: {self.theme}")
 
     def end_game(self):
-        screen = tt.Screen()
-        save_as_png(screen.getcanvas(), "result")
-        screen.bye()
+        self.screen = tt.Screen()
+        save_as_png(self.screen.getcanvas(), "result")
+        self.screen.bye()
 
     def start_game(self, theme):
         self.theme = theme
+        self.screen = tt.Screen()
         self.create_player
+        self.turtle = tt.Turtle()
         self.set_title()
 
         self.screen.setup(1280, 1080)
         self.screen.bgcolor("beige")
 
         while True:
-            if keyboard.is_pressed("z"):
-                self.go_forward()
 
-            if keyboard.is_pressed("esc"):
-                break
+            self.turn_right()
+            self.go_forward()
 
-            if keyboard.is_pressed("s"):
-                self.go_backward()
+            # if keyboard.is_pressed("z"):
+            #     self.go_forward()
 
-            if keyboard.is_pressed("q"):
-                self.turn_left()
+            # if keyboard.is_pressed("esc"):
+            #     break
 
-            if keyboard.is_pressed("d"):
-                self.turn_right()
+            # if keyboard.is_pressed("s"):
+            #     self.go_backward()
 
-            if keyboard.is_pressed("f"):
-                self.pen_is_up()
+            # if keyboard.is_pressed("q"):
+            #     self.turn_left()
 
-            if keyboard.is_pressed("e"):
-                self.pen_is_down()
+            # if keyboard.is_pressed("d"):
+            #     self.turn_right()
 
-            if keyboard.is_pressed("0"):
-                self.pen_10()
+            # if keyboard.is_pressed("f"):
+            #     self.pen_is_up()
 
-            if keyboard.is_pressed("9"):
-                self.pen_9()
+            # if keyboard.is_pressed("e"):
+            #     self.pen_is_down()
 
-            if keyboard.is_pressed("8"):
-                self.pen_8()
+            # if keyboard.is_pressed("0"):
+            #     self.pen_10()
 
-            if keyboard.is_pressed("7"):
-                self.pen_7()
+            # if keyboard.is_pressed("9"):
+            #     self.pen_9()
 
-            if keyboard.is_pressed("6"):
-                self.pen_6()
+            # if keyboard.is_pressed("8"):
+            #     self.pen_8()
 
-            if keyboard.is_pressed("5"):
-                self.pen_5()
+            # if keyboard.is_pressed("7"):
+            #     self.pen_7()
 
-            if keyboard.is_pressed("4"):
-                self.pen_4()
+            # if keyboard.is_pressed("6"):
+            #     self.pen_6()
 
-            if keyboard.is_pressed("3"):
-                self.pen_3()
+            # if keyboard.is_pressed("5"):
+            #     self.pen_5()
 
-            if keyboard.is_pressed("2"):
-                self.pen_2()
+            # if keyboard.is_pressed("4"):
+            #     self.pen_4()
 
-            if keyboard.is_pressed("1"):
-                self.pen_1()
+            # if keyboard.is_pressed("3"):
+            #     self.pen_3()
 
-            if keyboard.is_pressed(" "):
-                self.clear_screen()
+            # if keyboard.is_pressed("2"):
+            #     self.pen_2()
 
-            if keyboard.is_pressed("+"):
-                self.fill_start()
+            # if keyboard.is_pressed("1"):
+            #     self.pen_1()
 
-            if keyboard.is_pressed("-"):
-                self.fill_end()
+            # if keyboard.is_pressed(" "):
+            #     self.clear_screen()
 
-            if keyboard.is_pressed("!"):
-                self.color_black()
+            # if keyboard.is_pressed("+"):
+            #     self.fill_start()
 
-            if keyboard.is_pressed("x"):
-                self.color_red()
+            # if keyboard.is_pressed("-"):
+            #     self.fill_end()
 
-            if keyboard.is_pressed("c"):
-                self.color_yellow()
+            # if keyboard.is_pressed("!"):
+            #     self.color_black()
 
-            if keyboard.is_pressed("v"):
-                self.color_green()
+            # if keyboard.is_pressed("x"):
+            #     self.color_red()
 
-            if keyboard.is_pressed("b"):
-                self.color_orange()
+            # if keyboard.is_pressed("c"):
+            #     self.color_yellow()
 
-            if keyboard.is_pressed("n"):
-                self.color_pink()
+            # if keyboard.is_pressed("v"):
+            #     self.color_green()
 
-            if keyboard.is_pressed(","):
-                self.color_purple()
+            # if keyboard.is_pressed("b"):
+            #     self.color_orange()
 
-            if keyboard.is_pressed(";"):
-                self.color_brown()
+            # if keyboard.is_pressed("n"):
+            #     self.color_pink()
 
-            if keyboard.is_pressed(":"):
-                self.color_blue()
+            # if keyboard.is_pressed(","):
+            #     self.color_purple()
 
-            if keyboard.is_pressed("w"):
-                self.color_cyan()
+            # if keyboard.is_pressed(";"):
+            #     self.color_brown()
 
-            if keyboard.is_pressed("<"):
-                self.color_white()
+            # if keyboard.is_pressed(":"):
+            #     self.color_blue()
+
+            # if keyboard.is_pressed("w"):
+            #     self.color_cyan()
+
+            # if keyboard.is_pressed("<"):
+            #     self.color_white()
 
             if END_PLAYING == 1:
                 self.end_game()
@@ -497,34 +503,43 @@ class Client():
         #         print("Joueur suivant!\n\n")
         #         pass
 
-    def input_mod(self, prompt):
-        sys.stdout.write(prompt)
-        sys.stdout.flush()
-        return sys.stdin.readline().rstrip('\n')
+    # def input_mod(self, prompt):
+    #     sys.stdout.write(prompt)
+    #     sys.stdout.flush()
+    #     return sys.stdin.readline().rstrip('\n')
 
-    def notation_phase1(self, n):
-        note = 5
-        note = self.input_mod(f"Donne une note à {self.users[n]} (entre 0 et 10 compris) !\n--> *")
+    # def notation_phase1(self, n):
+    #     note = 5
+    #     note = self.input_mod(f"Donne une note à {self.users[n]} (entre 0 et 10 compris) !\n--> *")
+    #
+    #     print(note)
+    #
+    #     print(f"Tu as donné la note {note} à {self.users[n]} !")
+    #     NOTES[f"{self.users[n]}"].append(note)
+    #     print(NOTES)
+    #
+    #     print("Attente de vote pour le joueur suivant...")
+    #
+    #     while True:
+    #         if (self.client.recv(2048).decode(FORMAT) == "*NEXT_PLAYER"):
+    #             print("Joueur suivant!\n\n")
+    #             break
 
-        print(note)
-
-        print(f"Tu as donné la note {note} à {self.users[n]} !")
-        NOTES[f"{self.users[n]}"].append(note)
-        print(NOTES)
-
-        print("Attente de vote pour le joueur suivant...")
-
-        while True:
-            if (self.client.recv(2048).decode(FORMAT) == "*NEXT_PLAYER"):
-                print("Joueur suivant!\n\n")
-                break
-
-    def notation_phase(self):
-        self.notation_phase1(n=0)
-        self.notation_phase1(n=1)
-        self.notation_phase1(n=2)
-        self.notation_phase1(n=3)
-
+    # def notation_phase(self):
+    #     self.notation_phase1(n=0)
+    #     self.notation_phase1(n=1)
+    #     self.notation_phase1(n=2)
+    #     self.notation_phase1(n=3)
+    #
+    #     print(f"""⏳ - Asking if we can send the notes that you just gave to the server...""")
+    #     self.send("!sending-notes")
+    #     if (self.client.recv(2048).decode(FORMAT) == "*RECEPTION_OK"):
+    #         for u in NOTES:
+    #             print(NOTES)
+    #             print(u)
+    #         print(f"""✅ - Notes sent !""")
+    #
+    #         input()
 
     def end_playing(self):
         global END_PLAYING
@@ -539,7 +554,8 @@ class Client():
         time.sleep(2)
         webbrowser.open(f"http://{SERVER}:3000")
 
-        self.notation_phase()
+
+        print(f"""Pour donner une note aux joueurs, rendez-vous sur le moniteur de l'host !""")
 
         # Game ends
         self.send("!end-game-ok")
